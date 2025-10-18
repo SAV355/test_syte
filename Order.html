@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="site-header">
+        <nav class="nav">
+            <a href="index.html" class="logo">Кофе и Книги</a>
+            <ul class="nav-links">
+                <li><a href="OurMenu.html">Меню</a></li>
+                <li><a href="AboutUS.html">О нас</a></li>
+                <li><a href="Booking.html">Бронирование</a></li>
+                <li><a href="Order.html" aria-current="page">Заказать</a></li>
+                <li><a href="Contacts.html">Контакты</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="container">
+  <h1>Оформление заказа</h1>
+
+  <!-- Каталог / добавление позиций -->
+  <section class="order-items" aria-labelledby="order-items-title">
+    <div class="section-header">
+      <h2 id="order-items-title">Ваш заказ</h2>
+      <button type="button" id="addItemBtn" class="btn btn-secondary">Добавить позицию</button>
+    </div>
+
+    <div id="orderList" class="order-list">
+      <!-- Ряды товаров будут добавляться скриптом -->
+    </div>
+
+    <div class="promo-row">
+      <label for="promo">Промокод</label>
+      <input id="promo" name="promo" type="text" placeholder="Введите промокод" />
+      <button type="button" id="applyPromoBtn" class="btn btn-outline">Применить</button>
+    </div>
+  </section>
+
+  <!-- Сводка и итоги -->
+  <section class="order-summary" aria-labelledby="summary-title">
+    <h2 id="summary-title">Итог</h2>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <span>Подытог</span>
+        <strong id="subtotal">0 ₽</strong>
+      </div>
+      <div class="summary-item">
+        <span>Доставка</span>
+        <strong id="deliveryCost">0 ₽</strong>
+      </div>
+      <div class="summary-item total">
+        <span>Итого</span>
+        <strong id="total">0 ₽</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- Способ получения -->
+  <section class="fulfillment" aria-labelledby="fulfillment-title">
+    <h2 id="fulfillment-title">Способ получения</h2>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="fulfillment" value="pickup" checked />
+        Самовывоз
+      </label>
+      <label>
+        <input type="radio" name="fulfillment" value="delivery" />
+        Доставка
+      </label>
+    </div>
+
+    <div id="deliveryFields" class="delivery-fields" hidden>
+      <div class="grid">
+        <div>
+          <label for="street">Улица, дом</label>
+          <input id="street" name="street" type="text" autocomplete="street-address" />
+        </div>
+        <div>
+          <label for="apt">Квартира/офис (необязательно)</label>
+          <input id="apt" name="apt" type="text" />
+        </div>
+        <div>
+          <label for="city">Город</label>
+          <input id="city" name="city" type="text" />
+        </div>
+        <div>
+          <label for="postcode">Индекс</label>
+          <input id="postcode" name="postcode" type="text" inputmode="numeric" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Данные клиента -->
+  <section class="customer" aria-labelledby="customer-title">
+    <h2 id="customer-title">Данные клиента</h2>
+    <div class="grid">
+      <div>
+        <label for="fullName">Имя и фамилия</label>
+        <input id="fullName" name="fullName" type="text" required />
+      </div>
+      <div>
+        <label for="phone">Телефон</label>
+        <input id="phone" name="phone" type="tel" inputmode="tel" required />
+      </div>
+      <div>
+        <label for="email">E‑mail</label>
+        <input id="email" name="email" type="email" required />
+      </div>
+      <div>
+        <label for="note">Комментарий к заказу (необязательно)</label>
+        <textarea id="note" name="note" rows="3"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- Оплата -->
+  <section class="payment" aria-labelledby="payment-title">
+    <h2 id="payment-title">Способ оплаты</h2>
+    <div class="radio-group">
+      <label>
+        <input type="radio" name="payment" value="card" checked />
+        Банковская карта (онлайн)
+      </label>
+      <label>
+        <input type="radio" name="payment" value="paypal" />
+        PayPal
+      </label>
+      <label>
+        <input type="radio" name="payment" value="cash" />
+        Наличные при получении
+      </label>
+    </div>
+  </section>
+
+  <!-- Подтверждение -->
+  <section class="confirm">
+    <button type="button" id="placeOrderBtn" class="btn btn-primary">Оформить заказ</button>
+    <p class="small">Нажимая кнопку, вы соглашаетесь с условиями обслуживания и политикой конфиденциальности.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>© 2025 «Кофе и Книги». Все права защищены.</p>
+</footer>
+
+<script>
+  // Пример каталогa — позже можно загрузить через API (/api/menu)
+  const CATALOG = [
+    { id: 'capuccino', name: 'Капучино', price: 220 },
+    { id: 'latte', name: 'Латте', price: 240 },
+    { id: 'americano', name: 'Американо', price: 200 },
+    { id: 'cheesecake', name: 'Чизкейк', price: 280 },
+    { id: 'omelette', name: 'Омлет с овощами', price: 350 }
+  ];
+
+  const orderListEl = document.getElementById('orderList');
+  const addItemBtn = document.getElementById('addItemBtn');
+  const applyPromoBtn = document.getElementById('applyPromoBtn');
+  const promoInput = document.getElementById('promo');
+  const subtotalEl = document.getElementById('subtotal');
+  const deliveryCostEl = document.getElementById('deliveryCost');
+  const totalEl = document.getElementById('total');
+  const placeOrderBtn = document.getElementById('placeOrderBtn');
+  const deliveryFields = document.getElementById('deliveryFields');
+
+  let deliveryCost = 0;
+  let promoDiscount = 0;
+
+  function formatPrice(value) {
+    return `${value.toLocaleString('ru-RU')} ₽`;
+  }
+
+  function createItemRow() {
+    const row = document.createElement('div');
+    row.className = 'order-row';
+
+    const select = document.createElement('select');
+    select.className = 'order-item-select';
+    CATALOG.forEach(item => {
+      const opt = document.createElement('option');
+      opt.value = item.id;
+      opt.textContent = `${item.name} — ${formatPrice(item.price)}`;
+      select.appendChild(opt);
+    });
+
+    const qty = document.createElement('input');
+    qty.type = 'number';
+    qty.min = '1';
+    qty.value = '1';
+    qty.className = 'order-qty';
+
+    const price = document.createElement('span');
+    price.className = 'order-line-price';
+    price.textContent = formatPrice(CATALOG[0].price);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'btn btn-link';
+    removeBtn.textContent = 'Удалить';
+
+    row.appendChild(select);
+    row.appendChild(qty);
+    row.appendChild(price);
+    row.appendChild(removeBtn);
+    orderListEl.appendChild(row);
+
+    function updateLine() {
+      const selected = CATALOG.find(i => i.id === select.value);
+      const lineTotal = (selected?.price || 0) * Number(qty.value || 1);
+      price.textContent = formatPrice(lineTotal);
+      updateTotals();
+    }
+
+    select.addEventListener('change', updateLine);
+    qty.addEventListener('input', updateLine);
+    removeBtn.addEventListener('click', () => {
+      row.remove();
+      updateTotals();
+    });
+
+    updateLine();
+  }
+
+  function calculateSubtotal() {
+    let sum = 0;
+    document.querySelectorAll('.order-row').forEach(row => {
+      const select = row.querySelector('.order-item-select');
+      const qty = Number(row.querySelector('.order-qty').value || 1);
+      const item = CATALOG.find(i => i.id === select.value);
+      sum += (item?.price || 0) * qty;
+    });
+    return sum;
+  }
+
+  function updateTotals() {
+    const subtotal = calculateSubtotal();
+    const discount = Math.min(promoDiscount, subtotal);
+    const finalSubtotal = subtotal - discount;
+    const total = finalSubtotal + deliveryCost;
+
+    subtotalEl.textContent = formatPrice(finalSubtotal);
+    deliveryCostEl.textContent = formatPrice(deliveryCost);
+    totalEl.textContent = formatPrice(total);
+  }
+
+  addItemBtn.addEventListener('click', createItemRow);
+  // Стартовая позиция
+  createItemRow();
+
+  // Промокод: пример — "BOOKS10" дает скидку 10%
+  applyPromoBtn.addEventListener('click', () => {
+    const code = (promoInput.value || '').trim().toUpperCase();
+    const subtotal = calculateSubtotal();
+    if (code === 'BOOKS10') {
+      promoDiscount = Math.round(subtotal * 0.10);
+    } else {
+      promoDiscount = 0;
+    }
+    updateTotals();
+  });
+
+  // Самовывоз/Доставка
+  document.querySelectorAll('input[name="fulfillment"]').forEach(r => {
+    r.addEventListener('change', (e) => {
+      const isDelivery = e.target.value === 'delivery';
+      deliveryFields.hidden = !isDelivery;
+      deliveryCost = isDelivery ? 200 : 0;
+      updateTotals();
+    });
+  });
+
+  // Отправка заказа — заглушка (интегрируется с backend позже)
+  placeOrderBtn.addEventListener('click', () => {
+    const items = [];
+    document.querySelectorAll('.order-row').forEach(row => {
+      const id = row.querySelector('.order-item-select').value;
+      const qty = Number(row.querySelector('.order-qty').value || 1);
+      items.push({ id, qty });
+    });
+
+    const fulfillment = document.querySelector('input[name="fulfillment"]:checked')?.value;
+    const payload = {
+      items,
+      promo: promoInput.value || null,
+      fulfillment,
+      deliveryAddress: fulfillment === 'delivery' ? {
+        street: document.getElementById('street').value,
+        apt: document.getElementById('apt').value,
+        city: document.getElementById('city').value,
+        postcode: document.getElementById('postcode').value
+      } : null,
+      customer: {
+        fullName: document.getElementById('fullName').value,
+        phone: document.getElementById('phone').value,
+        email: document.getElementById('email').value,
+        note: document.getElementById('note').value
+      },
+      payment: document.querySelector('input[name="payment"]:checked')?.value,
+      totals: {
+        subtotal: calculateSubtotal(),
+        promoDiscount,
+        deliveryCost,
+        total: (calculateSubtotal() - promoDiscount) + deliveryCost
+      }
+    };
+
+    // TODO: заменить на реальный вызов API (POST /api/orders или /api/checkout)
+    console.log('Заказ сформирован:', payload);
+    alert('Заказ сформирован! В консоли — данные заказа.');
+  });
+</script>
+
+</body>
+</html>
